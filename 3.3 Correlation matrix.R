@@ -24,7 +24,10 @@ df_variables = read.xlsx(paste0(path.metadata, file.metadata), sheet = "Calculat
 df_data = read.xlsx(paste0(path.database, file.database))
 
 # 2. Select variables for correlation table
-select.cols = df_variables[!is.na(df_variables$Table.1) & df_variables$Data.Type=="Continuous", "Variable.R"]
+select.cols = df_variables[  !is.na(df_variables$Table.1) 
+                           & df_variables$Data.Type=="Continuous"
+                           & !(df_variables$Variable.R %in% c("Cooperation.Firms", "Cooperation.Universities")) # Exclude obviously correlated variables
+                           , "Variable.R"]
 for (c in select.cols){ # Remove columns with zero standard deviation
   if (sd(df_data[, c], na.rm = T) == 0){
     select.cols = setdiff(select.cols, c)
